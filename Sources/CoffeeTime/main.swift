@@ -54,6 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var displayStatusLabel: NSTextField!
     private var sleepToggle: NSSwitch!
     private var displayToggle: NSSwitch!
+    private var footerLink: NSButton!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         buildMainMenu()
@@ -141,13 +142,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         stack.spacing = 14
         stack.translatesAutoresizingMaskIntoConstraints = false
 
+        footerLink = makeLinkButton()
+
         guard let contentView = window.contentView else { return }
         contentView.addSubview(stack)
+        contentView.addSubview(footerLink)
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding),
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: contentPadding),
-            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -contentPadding),
+            stack.bottomAnchor.constraint(equalTo: footerLink.topAnchor, constant: -10),
+            footerLink.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            footerLink.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
             header.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
             headerText.trailingAnchor.constraint(equalTo: header.trailingAnchor),
             iconView.widthAnchor.constraint(equalToConstant: 56),
@@ -155,7 +161,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ])
 
         contentView.layoutSubtreeIfNeeded()
-        window.setContentSize(NSSize(width: contentWidth, height: stack.fittingSize.height + contentPadding * 2))
+        let footerHeight = footerLink.fittingSize.height
+        window.setContentSize(NSSize(width: contentWidth, height: stack.fittingSize.height + footerHeight + 10 + contentPadding * 2 + 12))
         window.makeKeyAndOrderFront(nil)
     }
 
@@ -173,6 +180,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         toggle.action = action
         toggle.toolTip = toolTip
         return toggle
+    }
+
+    private func makeLinkButton() -> NSButton {
+        let button = NSButton(title: "metalbabble.com", target: self, action: #selector(openMetalbabbleLink(_:)))
+        button.isBordered = false
+        button.font = .systemFont(ofSize: 12)
+        button.alignment = .center
+        button.contentTintColor = .linkColor
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }
 
     private func makeRow(title: String, statusLabel: NSTextField, toggle: NSSwitch) -> NSStackView {
@@ -194,6 +211,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func displayToggleChanged(_ sender: NSSwitch) {
         displayAssertion.setActive(sender.state == .on)
         updateStatus()
+    }
+
+    @objc private func openMetalbabbleLink(_ sender: NSButton) {
+        guard let url = URL(string: "https://metalbabble.com") else { return }
+        NSWorkspace.shared.open(url)
     }
 
     private func updateStatus() {

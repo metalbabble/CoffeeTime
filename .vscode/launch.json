@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CoffeeTIme}",
+            "name": "Debug CoffeeTime",
+            "target": "CoffeeTime",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug CoffeeTime"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CoffeeTIme}",
+            "name": "Release CoffeeTime",
+            "target": "CoffeeTime",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release CoffeeTime"
+        }
+    ]
+}

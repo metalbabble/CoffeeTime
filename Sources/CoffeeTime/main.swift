@@ -92,9 +92,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func buildWindow() {
-        let contentSize = NSSize(width: 360, height: 240)
+        let contentWidth: CGFloat = 360
+        let contentPadding: CGFloat = 28
         window = NSWindow(
-            contentRect: NSRect(origin: .zero, size: contentSize),
+            contentRect: NSRect(origin: .zero, size: NSSize(width: contentWidth, height: 240)),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false
@@ -143,15 +144,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let contentView = window.contentView else { return }
         contentView.addSubview(stack)
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
-            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28),
-            stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding),
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: contentPadding),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -contentPadding),
             header.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
             headerText.trailingAnchor.constraint(equalTo: header.trailingAnchor),
             iconView.widthAnchor.constraint(equalToConstant: 56),
             iconView.heightAnchor.constraint(equalToConstant: 56)
         ])
 
+        contentView.layoutSubtreeIfNeeded()
+        window.setContentSize(NSSize(width: contentWidth, height: stack.fittingSize.height + contentPadding * 2))
         window.makeKeyAndOrderFront(nil)
     }
 

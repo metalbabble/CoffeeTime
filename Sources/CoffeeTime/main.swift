@@ -103,12 +103,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.isReleasedWhenClosed = false
         window.center()
 
-        let title = NSTextField(labelWithString: "Keep Mac Awake")
+        let title = NSTextField(labelWithString: "CoffeeTime")
         title.font = .systemFont(ofSize: 22, weight: .semibold)
 
-        let detail = NSTextField(wrappingLabelWithString: "Prevent automatic sleep while CoffeeTime is running.")
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+        let detail = NSTextField(wrappingLabelWithString: "v\(version)")
         detail.font = .systemFont(ofSize: 13)
         detail.textColor = .secondaryLabelColor
+
+        let iconView = NSImageView()
+        iconView.image = NSImage(named: NSImage.Name("CoffeeTime"))
+        iconView.imageScaling = .scaleProportionallyUpOrDown
+
+        let headerText = NSStackView(views: [title, detail])
+        headerText.orientation = .vertical
+        headerText.alignment = .leading
+        headerText.spacing = 4
+
+        let header = NSStackView(views: [iconView, headerText])
+        header.orientation = .horizontal
+        header.alignment = .centerY
+        header.spacing = 12
 
         sleepStatusLabel = makeStatusLabel()
         displayStatusLabel = makeStatusLabel()
@@ -117,9 +132,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         displayToggle = makeToggle(action: #selector(displayToggleChanged(_:)), toolTip: "Allow or prevent the display from sleeping or locking")
 
         let sleepRow = makeRow(title: "Prevent system sleep", statusLabel: sleepStatusLabel, toggle: sleepToggle)
-        let displayRow = makeRow(title: "Prevent screen off and lock", statusLabel: displayStatusLabel, toggle: displayToggle)
+        let displayRow = makeRow(title: "Prevent screen off / lock", statusLabel: displayStatusLabel, toggle: displayToggle)
 
-        let stack = NSStackView(views: [title, detail, sleepRow, displayRow])
+        let stack = NSStackView(views: [header, sleepRow, displayRow])
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 14
@@ -131,7 +146,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28),
             stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            detail.trailingAnchor.constraint(equalTo: stack.trailingAnchor)
+            header.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+            headerText.trailingAnchor.constraint(equalTo: header.trailingAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: 56),
+            iconView.heightAnchor.constraint(equalToConstant: 56)
         ])
 
         window.makeKeyAndOrderFront(nil)

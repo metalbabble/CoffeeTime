@@ -2,8 +2,11 @@
 
 CoffeeTime is a small native macOS app that temporarily prevents automatic system sleep while it is running.
 
-- The switch starts **on**.
-- Turning it off immediately releases the system sleep assertion.
+- Both switches start **on**.
+- The first switch prevents automatic system sleep.
+- The second switch prevents the display from turning off or locking automatically.
+- Turning either switch off immediately releases its assertion.
+- Pressing **Cmd-Q** quits the app.
 - Quitting the app releases the assertion as well.
 - It changes no macOS power settings and installs no background service.
 - The assertion works on both battery and AC power.
